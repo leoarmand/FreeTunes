@@ -10,11 +10,13 @@ import Foundation
 struct Playlist: Identifiable, Hashable {
     var id: String { name }  // Le nom est unique donc on peut l’utiliser comme ID
     let name: String
-    let path: String
+    let boxPath: String
+    let localURLPath: String
 }
 
 struct Track: Identifiable, Hashable {
     var id: String { name }
     let name: String
-    let path: String
+    let boxPath: String
+    let isDownloaded: Bool
 }

@@ -5,7 +5,6 @@
 //  Created by Léo Armand on 29/04/2025.
 //
 
-
 import SwiftUI
 import AVFoundation
 import Network
@@ -22,11 +21,16 @@ struct TrackListView: View {
     var body: some View {
         List(tracks, id: \.id) { track in
             Button(action: {
-                if let localURL = localTrackURLs[track.name] {
+                let destination = FileManager.default.temporaryDirectory
+                    .appendingPathComponent(playlist.name)
+                    .appendingPathComponent(track.name)
+                let fileExists = FileManager.default.fileExists(atPath: destination.path)
+
+                if fileExists {
                     selectedTrack = track
-                    playTrack(url: localURL)
+                    playTrack(url: destination)
                 } else {
-                    FreeboxAPI.downloadTrack(track) { localURL in
+                    FreeboxAPI.downloadTrack(track, destination: destination) { localURL in
                         if let localURL = localURL {
                             DispatchQueue.main.async {
                                 localTrackURLs[track.id] = localURL
@@ -40,7 +44,17 @@ struct TrackListView: View {
                     }
                 }
             }) {
-                Text(track.name.replacingOccurrences(of: ".mp3", with: ""))
+                HStack {
+                    Text(track.name.replacingOccurrences(of: ".mp3", with: ""))
+                    Spacer()
+                    let destination = FileManager.default.temporaryDirectory
+                        .appendingPathComponent(playlist.name)
+                        .appendingPathComponent(track.name)
+                    let fileExists = FileManager.default.fileExists(atPath: destination.path)
+
+                    Image(systemName: fileExists ? "checkmark.circle.fill" : "arrow.down.circle")
+                        .foregroundColor(fileExists ? .green : .gray)
+                }
             }
         }
         .navigationTitle(playlist.name)
