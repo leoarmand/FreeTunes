@@ -11,12 +11,13 @@ import SwiftUI
 struct PlaylistListView: View {
     @State private var playlists: [Playlist] = []
     @State private var isLoading = false
+    @State private var isOffline = false
     @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
             List(playlists, id: \.id) { playlist in
-                NavigationLink(destination: TrackListView(playlist: playlist)) {
+                NavigationLink(destination: TrackListView(playlist: playlist, isOffline: isOffline)) {
                     Text(playlist.name)
                 }
             }
@@ -39,11 +40,14 @@ struct PlaylistListView: View {
                         try FileManager.default.createDirectory(at: folderURL, withIntermediateDirectories: true, attributes: nil)
                     }
                 }
+                playlists = loadPlaylists(remotePlaylists: remotePlaylists)
+                isLoading = false
             } catch {
                 errorMessage = error.localizedDescription
+                playlists = loadPlaylists(remotePlaylists: remotePlaylists)
+                isOffline = true
+                isLoading = false
             }
-            playlists = loadPlaylists(remotePlaylists: remotePlaylists)
-            isLoading = false
         }
     }
 

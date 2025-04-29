@@ -11,6 +11,7 @@ import Network
 
 struct TrackListView: View {
     var playlist: Playlist
+    var isOffline: Bool
     @State private var tracks: [Track] = []
     @State private var selectedTrack: Track?
     @State private var localTrackURLs: [String: URL] = [:]
@@ -67,15 +68,15 @@ struct TrackListView: View {
     }
 
     func loadTracks() {
-        do {
-            showAlert = false
-            try FreeboxAPI.fetchTracks(in: playlist) { fetchedTracks in
+        if isOffline {
+            fetchLocalTracks()
+        }
+        else {
+            FreeboxAPI.fetchTracks(in: playlist) { fetchedTracks in
                 DispatchQueue.main.async {
                     self.tracks = fetchedTracks
                 }
             }
-        } catch {
-            fetchLocalTracks()
         }
     }
 
