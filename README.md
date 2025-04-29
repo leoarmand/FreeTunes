@@ -22,6 +22,6 @@ This is a temporary token provided by Freebox OS to access data on your Freebox.
 Learn more how to retrieve it by reading the [official Freebox dev API documentation](https://dev.freebox.fr/sdk/os/login/)
 
 ### password generation from challenge
-Since it was a confusing how to retrieve the session token using app_token and challenge, I created a small python script named hmac.py at project root directory.
+Since it was a bit confusing how to retrieve the session token using app_token and challenge, I created a small python script named hmac.py at project root directory.
 You can paste it's content to https://pynative.com/online-python-code-editor-to-execute-python-code/ if python is not installed on your machine.
 Don't forget to replace with your token and challenge to compute the password used to create a session with the Freebox API.

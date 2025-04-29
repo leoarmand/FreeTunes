@@ -40,7 +40,7 @@ struct TrackListView: View {
                     }
                 }
             }) {
-                Text(track.name)
+                Text(track.name.replacingOccurrences(of: ".mp3", with: ""))
             }
         }
         .navigationTitle(playlist.name)
