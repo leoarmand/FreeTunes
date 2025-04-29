@@ -75,8 +75,7 @@ struct TrackListView: View {
                 }
             }
         } catch {
-            alertMessage = "Pas de connexion Internet"
-            showAlert = true
+            fetchLocalTracks()
         }
     }
 
@@ -88,5 +87,26 @@ struct TrackListView: View {
             alertMessage = "Erreur lors de la lecture du fichier"
             showAlert = true
         }
+    }
+    
+    func fetchLocalTracks() {
+        let localDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(playlist.name)
+        
+        guard let contents = try? FileManager.default.contentsOfDirectory(at: localDirectory, includingPropertiesForKeys: nil) else {
+            self.tracks = []
+            return
+        }
+
+        let mp3Files = contents.filter { $0.pathExtension.lowercased() == "mp3" }
+
+        let localTracks = mp3Files.map { fileURL -> Track in
+            Track(
+                name: fileURL.lastPathComponent,
+                boxPath: "",
+                isDownloaded: true
+            )
+        }
+
+        self.tracks = localTracks
     }
 }
